@@ -1,0 +1,57 @@
+@import "tailwindcss";
+
+@theme {
+  --font-display: "Clash Display", sans-serif;
+  --font-sans: "Satoshi", sans-serif;
+  --font-serif: "Playfair Display", serif;
+  
+  --color-dark: #0A0A0A;
+  --color-light: #F5F2ED;
+  --color-accent: #E2FF00;
+  --color-gold: #D4AF37;
+}
+
+@layer base {
+  body {
+    font-family: var(--font-sans);
+    cursor: none; /* For custom cursor */
+    overflow-x: hidden;
+  }
+  
+  /* Reset cursor for mobile */
+  @media (pointer: coarse) {
+    body {
+      cursor: auto;
+    }
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+html.lenis, html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis.lenis-smooth iframe {
+  pointer-events: none;
+}
