@@ -268,7 +268,7 @@ export const more: Minor[] = [
   },
   {
     slug: 'assetgen',
-    name: 'Asset Generator',
+    name: 'KOSMOS',
     kind: 'web',
     category: 'Tool · Level Design',
     summary: 'A level editor for building engine-ready interior spaces and reusable parametric assets.',
@@ -284,7 +284,7 @@ export const more: Minor[] = [
     ],
     details: {
       overview:
-        'Asset Generator (previously KOSMOS, an interior-design tool) is becoming a developer-facing level editor: define precise rectangular spaces, place catalog assets and export deterministic JSON that game engines like Unreal can consume.',
+        'KOSMOS started as an interior-design tool and is becoming a developer-facing level editor: define precise rectangular spaces, place catalog assets and export deterministic JSON that game engines like Unreal can consume.',
       features: [
         'Room setup by type and exact dimensions, with walls generated automatically',
         '2D drag-and-drop canvas with snapping, undo/redo and a properties panel',
@@ -496,11 +496,11 @@ export const skills: SkillGroup[] = [
 export const usedIn: Record<string, string[]> = {
   Python: ['IR-AIS', 'Behavioral Threat Detection', 'Used Car Price & Insurance', 'TimeGenius.AI', "Don't Even Bother"],
   JavaScript: ['EcoSense India', 'GameVault', 'Smart Energy Tracker', 'AlgoViz'],
-  TypeScript: ['IR-AIS', 'Asset Generator'],
+  TypeScript: ['IR-AIS', 'KOSMOS'],
   SQL: ['TimeGenius.AI'],
-  React: ['EcoSense India', 'TimeGenius.AI', 'Asset Generator'],
+  React: ['EcoSense India', 'TimeGenius.AI', 'KOSMOS'],
   'Next.js': ['IR-AIS'],
-  Vite: ['EcoSense India', 'Asset Generator', 'This portfolio'],
+  Vite: ['EcoSense India', 'KOSMOS', 'This portfolio'],
   'Tailwind CSS': ['TimeGenius.AI', 'This portfolio'],
   'Framer Motion': ['This portfolio'],
   'Node.js': ['EcoSense India', 'GameVault', 'Smart Energy Tracker'],
