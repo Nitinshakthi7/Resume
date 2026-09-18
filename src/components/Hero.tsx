@@ -102,7 +102,9 @@ export function Hero({ introFinished }: { introFinished?: boolean }) {
               Creative
             </motion.span>
           </span>
-          <span className="overflow-hidden block pb-[0.12em]" aria-hidden="true">
+          {/* Extra bottom room so the descender of the "p" isn't clipped by the reveal mask;
+              the negative margin keeps the spacing below unchanged */}
+          <span className="overflow-hidden block text-[15vw] md:text-[145px] pb-[0.3em] -mb-[0.18em]" aria-hidden="true">
             <motion.span
               variants={{ hide: { y: '100%' }, show: { y: 0 } }}
               transition={{ duration: 1, delay: 0.2, ease }}
