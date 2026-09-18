@@ -160,7 +160,7 @@ export function ProjectModal({ project, onClose }: { project: Project | null; on
                     <span className="font-sans text-[11px] tracking-[0.3em] font-bold text-accent uppercase">
                       {project.category}
                     </span>
-                    {project.wip && (
+                    {(project.wip || ('status' in project && project.status === 'Work in progress')) && (
                       <span className="px-2.5 py-0.5 rounded-full border border-gold/40 text-gold font-sans text-[10px] tracking-[0.2em] uppercase">
                         Work in progress
                       </span>

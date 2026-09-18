@@ -61,6 +61,7 @@ export const featured: Featured[] = [
     art: 'ecosense',
     image: '/projects/ecosense/cover.webp',
     link: `${GH}/Ecosense`,
+    status: 'Work in progress',
     gallery: [
       shot('ecosense', 'cover', 'Animated landing page with a day/night Indian skyline'),
       shot('ecosense', 'live', 'Live conditions: every reading shows its source and how much sources disagree'),
@@ -244,8 +245,8 @@ export const more: Minor[] = [
     badge: 'CICADA Hackathon',
     cover: '/projects/timegenius/cover.webp',
     gallery: [
-      shot('timegenius', 'cover', "A generated timetable with the solver's summary"),
-      shot('timegenius', 'landing', 'Landing page'),
+      shot('timegenius', 'cover', 'Landing page'),
+      shot('timegenius', 'timetable', "A generated timetable with the solver's summary"),
       shot('timegenius', 'dashboard', 'Dashboard for faculty, courses and rooms'),
     ],
     details: {
@@ -310,7 +311,8 @@ export const more: Minor[] = [
     tech: ['JavaScript', 'HTML', 'CSS', 'SVG'],
     cover: '/projects/algoviz/cover.webp',
     gallery: [
-      shot('algoviz', 'cover', 'Building a binary tree step by step'),
+      shot('algoviz', 'cover', 'Landing page with a live sorting preview'),
+      shot('algoviz', 'tree', 'Building a binary tree step by step'),
       shot('algoviz', 'sorting', 'Quick Sort with the executing line and pointers at each step'),
       shot('algoviz', 'studio', 'Code & Theory Studio: 59 searchable topics'),
     ],
@@ -345,8 +347,8 @@ export const more: Minor[] = [
     link: `${GH}/GameVault`,
     cover: '/projects/gamevault/cover.webp',
     gallery: [
-      shot('gamevault', 'cover', 'Game library with genre-coloured cover art'),
-      shot('gamevault', 'landing', 'Landing page'),
+      shot('gamevault', 'cover', 'Landing page'),
+      shot('gamevault', 'grid', 'Game library with genre-coloured cover art'),
       shot('gamevault', 'library', 'Filter by platform, genre and top rated'),
     ],
     details: {
@@ -413,7 +415,8 @@ export const more: Minor[] = [
     link: `${GH}/Smart-Energy-Usage-Tracker`,
     cover: '/projects/energy/cover.webp',
     gallery: [
-      shot('energy', 'cover', 'Dashboard: top consumers and a 24-hour timeline'),
+      shot('energy', 'cover', 'Landing page'),
+      shot('energy', 'dashboard', 'Dashboard: top consumers and a 24-hour timeline'),
       shot('energy', 'meter', 'Live energy meter'),
     ],
     details: {
