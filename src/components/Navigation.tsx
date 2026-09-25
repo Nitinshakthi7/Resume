@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { cn } from '../lib/utils';
 import { Menu, X, ArrowUpRight } from 'lucide-react';
 
-export const RESUME_URL = '/Nitin_M_Resume.pdf?v=3';
+export const RESUME_URL = '/Nitin_M_Resume.pdf?v=4';
 
 const navLinks = [
   { name: 'About', href: '#about' },
