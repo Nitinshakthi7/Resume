@@ -246,6 +246,13 @@ export const featured: Featured[] = [
     link: `${GH}/MerchantOS`,
     badge: 'Razorpay Buildathon',
     notDeployed: true,
+    image: '/projects/merchantos/cover.webp',
+    gallery: [
+      shot('merchantos', 'cover', 'Overview: at-risk and recovered totals, recovery rate, status and failure-reason breakdowns'),
+      shot('merchantos', 'cases', '50 simulated recovery cases with status, failure reason, retries and outcome'),
+      shot('merchantos', 'audit', 'Audit trail: every Detect → Diagnose → Decide → Act → Verify step, logged'),
+      shot('merchantos', 'controls', 'Controls: run a batch, inject a single test event, and the 5-stage loop reference'),
+    ],
     details: {
       overview:
         'Built for the Razorpay Buildathon, MerchantOS watches for failed payments and abandoned checkouts, classifies why each one failed, and makes a bounded recovery decision — retry, send a payment link, or hold back — before verifying the outcome. Every decision is policy-limited and logged.',
@@ -286,6 +293,13 @@ export const featured: Featured[] = [
     link: 'https://github.com/TejashRajuKV/Mystery_Desk',
     badge: 'Team of 4',
     notDeployed: true,
+    image: '/projects/mysterydesk/cover.webp',
+    gallery: [
+      shot('mysterydesk', 'cover', 'Main menu: five case files on the desk, one detective'),
+      shot('mysterydesk', 'cases', 'The Case Files: five cases, each with a difficulty and a one-line hook'),
+      shot('mysterydesk', 'interview', 'Interrogating a suspect: mood-based portrait, dialogue and branching choices'),
+      shot('mysterydesk', 'evidence', 'An exhibit record — time, place, people and source, ready to pin to the board'),
+    ],
     details: {
       overview:
         'MysteryDesk is a detective investigation game: read case files, travel between locations, interview suspects through branching dialogue, link evidence on an investigation board, and submit a final accusation. What actually happened, and which of five endings you get, is worked out from the investigation you ran — nothing is pre-written per playthrough.',
@@ -593,6 +607,11 @@ export const more: Minor[] = [
     tech: ['React', 'TypeScript', 'Vite', 'Tailwind CSS', 'Figma Make'],
     link: `${GH}/StationQuestGameDevelopment`,
     notDeployed: true,
+    cover: '/projects/stationquest/cover.webp',
+    gallery: [
+      shot('stationquest', 'cover', 'Storage Bay: the opening room, items to take and a locked door north'),
+      shot('stationquest', 'backpack', 'Backpack sidebar populated, and the parser correctly rejecting an invalid action'),
+    ],
     details: {
       overview:
         'Station Quest is a text-based escape room built with Figma Make: trapped on Station Sigma, you have 30 moves to get out, typing plain-English commands ("grab the keycard", "swipe the badge") into a retro terminal.',
@@ -625,6 +644,11 @@ export const more: Minor[] = [
     link: `${GH}/Snake-and-Ladder-Quiz-Game`,
     badge: 'Course final project',
     notDeployed: true,
+    cover: '/projects/snakeladder/cover.webp',
+    gallery: [
+      shot('snakeladder', 'cover', 'Board and player panel before the first roll'),
+      shot('snakeladder', 'midgame', 'Mid-game: both players on the board, a live dice roll and whose turn it is'),
+    ],
     details: {
       overview:
         'A two-player, browser-based Snake & Ladder game with trivia mixed into the core mechanic: landing on a snake or ladder triggers a quiz question, and a correct answer decides whether you climb or dodge.',
@@ -651,6 +675,12 @@ export const more: Minor[] = [
     link: `${GH}/Kanban-Just-Prompts`,
     badge: 'Course project',
     notDeployed: true,
+    cover: '/projects/kanban/dashboard.webp',
+    gallery: [
+      shot('kanban', 'dashboard', 'Dashboard: totals, boards and recently updated cards across the workspace'),
+      shot('kanban', 'board', 'A board in Backlog / To Do / In Progress / Review, with priorities, labels and due dates'),
+      shot('kanban', 'card', 'Card detail: status, priority, assignee, due date, labels and activity log'),
+    ],
     details: {
       overview:
         'Built for the AI Augmented Software Development university course, which compared building the same app two ways: guided by a pre-written CLAUDE.md, or from prompts alone. This is the prompts-only build — a genuinely full-featured Kanban board, not a shallow scaffold.',
