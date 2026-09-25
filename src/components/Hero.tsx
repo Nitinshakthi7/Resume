@@ -1,7 +1,6 @@
 import { motion, useMotionValue, useScroll, useSpring, useTransform } from 'motion/react';
 import { useEffect, useRef } from 'react';
 import { ArrowDown, ArrowUpRight } from 'lucide-react';
-import { RESUME_URL } from './Navigation';
 
 const ease = [0.16, 1, 0.3, 1] as const;
 
@@ -35,7 +34,7 @@ function CursorGlow() {
   );
 }
 
-export function Hero({ introFinished }: { introFinished?: boolean }) {
+export function Hero({ introFinished, onOpenResume }: { introFinished?: boolean; onOpenResume: () => void }) {
   const ref = useRef(null);
   const { scrollYProgress } = useScroll({
     target: ref,
@@ -151,15 +150,14 @@ export function Hero({ introFinished }: { introFinished?: boolean }) {
             View my work
             <ArrowDown size={15} className="transition-transform group-hover:translate-y-0.5" />
           </a>
-          <a
-            href={RESUME_URL}
-            target="_blank"
-            rel="noopener noreferrer"
+          <button
+            type="button"
+            onClick={onOpenResume}
             className="group inline-flex items-center gap-2 px-6 py-3 rounded-full border border-light/25 text-light font-sans text-xs font-bold tracking-[0.2em] uppercase hover:border-light transition-colors"
           >
             Download resume
             <ArrowUpRight size={15} className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-          </a>
+          </button>
         </motion.div>
       </motion.div>
 

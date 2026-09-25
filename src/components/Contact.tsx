@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { motion } from 'motion/react';
 import { Github, Linkedin, ArrowUpRight, FileText, ArrowUp, Copy, Check } from 'lucide-react';
 import { EMAIL } from '../lib/resumeData';
-import { RESUME_URL } from './Navigation';
 import { ContactForm } from './ContactForm';
 
 const ease = [0.16, 1, 0.3, 1] as const;
@@ -10,7 +9,6 @@ const ease = [0.16, 1, 0.3, 1] as const;
 const socials = [
   { name: 'GitHub', href: 'https://github.com/Nitinshakthi7', icon: Github },
   { name: 'LinkedIn', href: 'https://www.linkedin.com/in/nitin-m-758342219', icon: Linkedin },
-  { name: 'Resume (PDF)', href: RESUME_URL, icon: FileText },
 ];
 
 function CopyEmail() {
@@ -46,7 +44,7 @@ function CopyEmail() {
   );
 }
 
-export function Contact() {
+export function Contact({ onOpenResume }: { onOpenResume: () => void }) {
   return (
     <section id="contact" className="relative w-full min-h-screen pt-32 pb-10 px-6 md:px-12 bg-dark text-light flex flex-col justify-between z-10 overflow-hidden">
       <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(ellipse_at_20%_40%,_rgba(226,255,0,0.05)_0%,_transparent_55%)]" />
@@ -95,6 +93,12 @@ export function Contact() {
                     <span className="font-sans text-lg tracking-wide group-hover:text-accent transition-colors">{name}</span>
                   </a>
                 ))}
+                <button type="button" onClick={onOpenResume} className="group flex items-center gap-6 w-fit text-left">
+                  <div className="w-12 h-12 rounded-full border border-light/20 flex items-center justify-center group-hover:border-accent group-hover:bg-accent transition-all duration-300">
+                    <FileText size={20} className="group-hover:text-dark transition-colors" />
+                  </div>
+                  <span className="font-sans text-lg tracking-wide group-hover:text-accent transition-colors">Resume (PDF)</span>
+                </button>
               </div>
             </div>
           </div>

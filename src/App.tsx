@@ -9,6 +9,7 @@ import { Work } from './components/Work';
 import { Contact } from './components/Contact';
 import { Journey } from './components/Journey';
 import { Intro } from './components/Intro';
+import { ResumeModal } from './components/ResumeModal';
 import { setLenis, scrollToTarget } from './lib/scroll';
 
 // Number keys jump between sections once the intro is done
@@ -17,7 +18,9 @@ const SHORTCUTS = ['#about', '#expertise', '#work', '#journey', '#contact'];
 export default function App() {
   const [showIntro, setShowIntro] = useState(true);
   const [introFinished, setIntroFinished] = useState(false);
+  const [resumeOpen, setResumeOpen] = useState(false);
   const lenisRef = useRef<Lenis | null>(null);
+  const openResume = useCallback(() => setResumeOpen(true), []);
 
   // One Lenis instance for the lifetime of the page
   useEffect(() => {
@@ -92,15 +95,16 @@ export default function App() {
         {showIntro && <Intro onComplete={finishIntro} />}
       </AnimatePresence>
       <div className="film-grain" aria-hidden="true" />
-      <Navigation introFinished={introFinished} />
+      <Navigation introFinished={introFinished} onOpenResume={openResume} />
       <main>
-        <Hero introFinished={introFinished} />
+        <Hero introFinished={introFinished} onOpenResume={openResume} />
         <About />
         <Expertise />
         <Work />
         <Journey />
-        <Contact />
+        <Contact onOpenResume={openResume} />
       </main>
+      <ResumeModal open={resumeOpen} onClose={() => setResumeOpen(false)} />
     </div>
   );
 }

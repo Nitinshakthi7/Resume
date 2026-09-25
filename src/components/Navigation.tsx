@@ -43,7 +43,7 @@ function useActiveSection() {
   return active;
 }
 
-export function Navigation({ introFinished }: { introFinished?: boolean }) {
+export function Navigation({ introFinished, onOpenResume }: { introFinished?: boolean; onOpenResume: () => void }) {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const active = useActiveSection();
@@ -96,15 +96,14 @@ export function Navigation({ introFinished }: { introFinished?: boolean }) {
               {link.name}
             </a>
           ))}
-          <a
-            href={RESUME_URL}
-            target="_blank"
-            rel="noopener noreferrer"
+          <button
+            type="button"
+            onClick={onOpenResume}
             className="group flex items-center gap-1.5 px-4 py-2 rounded-full border border-light/20 text-light font-sans text-[11px] tracking-[0.25em] font-bold uppercase hover:bg-accent hover:border-accent hover:text-dark transition-all duration-300"
           >
             Resume
             <ArrowUpRight size={14} className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-          </a>
+          </button>
         </div>
 
         {/* Mobile Toggle */}
@@ -145,17 +144,19 @@ export function Navigation({ introFinished }: { introFinished?: boolean }) {
                 {link.name}
               </motion.a>
             ))}
-            <motion.a
+            <motion.button
+              type="button"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.08 * navLinks.length + 0.15 }}
-              href={RESUME_URL}
-              target="_blank"
-              rel="noopener noreferrer"
+              onClick={() => {
+                setIsOpen(false);
+                onOpenResume();
+              }}
               className="mt-4 flex items-center gap-2 px-6 py-3 rounded-full bg-accent text-dark font-sans text-sm tracking-[0.25em] font-bold uppercase"
             >
               Resume <ArrowUpRight size={16} />
-            </motion.a>
+            </motion.button>
           </motion.div>
         )}
       </AnimatePresence>
