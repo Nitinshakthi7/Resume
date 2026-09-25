@@ -42,11 +42,11 @@ p, ul {
 
 @page {
   size: A4;
-  margin: 16mm 18mm;
+  margin: 12mm 14mm;
 }
 
 .doc {
-  max-width: 720px;
+  width: 100%;
 }
 
 /* Header */
