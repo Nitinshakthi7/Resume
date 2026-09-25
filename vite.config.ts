@@ -5,7 +5,23 @@ import {defineConfig} from 'vite';
 
 export default defineConfig(() => {
   return {
-    plugins: [react(), tailwindcss()],
+    plugins: [
+      react(),
+      tailwindcss(),
+      {
+        // The resume PDF is regenerated in place during development; without this,
+        // browsers cache it by URL and keep showing a stale copy after a rebuild.
+        name: 'no-cache-resume-pdf',
+        configureServer(server) {
+          server.middlewares.use((req, res, next) => {
+            if (req.url?.startsWith('/Nitin_M_Resume.pdf')) {
+              res.setHeader('Cache-Control', 'no-store');
+            }
+            next();
+          });
+        },
+      },
+    ],
     resolve: {
       alias: {
         '@': path.resolve(__dirname, '.'),
