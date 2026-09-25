@@ -19,6 +19,32 @@
     overflow-x: hidden;
   }
 
+  /* Firefox */
+  html {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(245, 242, 237, 0.25) var(--color-dark);
+  }
+
+  /* WebKit (Chrome, Safari, Edge) */
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--color-dark);
+  }
+  ::-webkit-scrollbar-thumb {
+    background-color: rgba(245, 242, 237, 0.25);
+    border-radius: 999px;
+    border: 2px solid var(--color-dark);
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: var(--color-accent);
+  }
+  ::-webkit-scrollbar-corner {
+    background: var(--color-dark);
+  }
+
   :focus-visible {
     outline: 2px solid var(--color-accent);
     outline-offset: 4px;
