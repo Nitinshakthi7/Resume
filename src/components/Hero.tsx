@@ -153,7 +153,8 @@ export function Hero({ introFinished }: { introFinished?: boolean }) {
           </a>
           <a
             href={RESUME_URL}
-            download="Nitin_M_Resume.pdf"
+            target="_blank"
+            rel="noopener noreferrer"
             className="group inline-flex items-center gap-2 px-6 py-3 rounded-full border border-light/25 text-light font-sans text-xs font-bold tracking-[0.2em] uppercase hover:border-light transition-colors"
           >
             Download resume

@@ -98,7 +98,8 @@ export function Navigation({ introFinished }: { introFinished?: boolean }) {
           ))}
           <a
             href={RESUME_URL}
-            download="Nitin_M_Resume.pdf"
+            target="_blank"
+            rel="noopener noreferrer"
             className="group flex items-center gap-1.5 px-4 py-2 rounded-full border border-light/20 text-light font-sans text-[11px] tracking-[0.25em] font-bold uppercase hover:bg-accent hover:border-accent hover:text-dark transition-all duration-300"
           >
             Resume
@@ -149,7 +150,8 @@ export function Navigation({ introFinished }: { introFinished?: boolean }) {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.08 * navLinks.length + 0.15 }}
               href={RESUME_URL}
-              download="Nitin_M_Resume.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
               className="mt-4 flex items-center gap-2 px-6 py-3 rounded-full bg-accent text-dark font-sans text-sm tracking-[0.25em] font-bold uppercase"
             >
               Resume <ArrowUpRight size={16} />
