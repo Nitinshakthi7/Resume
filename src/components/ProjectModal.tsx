@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { AnimatePresence, motion } from 'motion/react';
-import { ArrowUpRight, ChevronLeft, ChevronRight, Github, X } from 'lucide-react';
+import { ArrowUpRight, ChevronLeft, ChevronRight, Github, Play, X } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { lockScroll } from '../lib/scroll';
-import type { Project } from '../lib/resumeData';
+import { showNotDeployed, type Project } from '../lib/resumeData';
 import { ProjectArt } from './ProjectArt';
+import { NotDeployedTag } from './NotDeployedTag';
 
 const ease = [0.16, 1, 0.3, 1] as const;
 
@@ -25,11 +26,11 @@ function Gallery({ project }: { project: Project }) {
   }, [count]);
 
   if (!count) {
-    // No screenshots yet (e.g. Looped Lies): fall back to the generated art
-    const art = 'art' in project ? project.art : null;
+    // No screenshots yet (e.g. Looped Lies): fall back to the generated art, if any
+    const art = 'art' in project ? project.art : undefined;
     return (
       <div className="relative aspect-[16/10] rounded-2xl overflow-hidden border border-light/10 bg-[#141414]">
-        {art && <ProjectArt kind={art} />}
+        {art ? <ProjectArt kind={art} /> : null}
       </div>
     );
   }
@@ -165,11 +166,12 @@ export function ProjectModal({ project, onClose }: { project: Project | null; on
                         Work in progress
                       </span>
                     )}
-                    {'badge' in project && project.badge && (
+                    {project.badge && (
                       <span className="px-2.5 py-0.5 rounded-full bg-gold/15 text-gold font-sans text-[10px] tracking-[0.2em] uppercase">
                         {project.badge}
                       </span>
                     )}
+                    {showNotDeployed(project) && <NotDeployedTag />}
                   </div>
                   <h2
                     id="project-modal-title"
@@ -191,12 +193,28 @@ export function ProjectModal({ project, onClose }: { project: Project | null; on
                   )}
 
                   <div className="mt-8 flex flex-wrap gap-3">
+                    {project.live && (
+                      <a
+                        href={project.live.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-accent text-dark font-sans text-xs font-bold tracking-[0.2em] uppercase hover:bg-light transition-colors"
+                      >
+                        <Play size={14} className="fill-dark" />
+                        {project.live.label}
+                      </a>
+                    )}
                     {project.link && (
                       <a
                         href={project.link}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="group inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-accent text-dark font-sans text-xs font-bold tracking-[0.2em] uppercase hover:bg-light transition-colors"
+                        className={cn(
+                          'group inline-flex items-center gap-2 px-5 py-2.5 rounded-full font-sans text-xs font-bold tracking-[0.2em] uppercase transition-colors',
+                          project.live
+                            ? 'border border-light/25 text-light hover:bg-light hover:text-dark'
+                            : 'bg-accent text-dark hover:bg-light',
+                        )}
                       >
                         <Github size={15} />
                         View source
@@ -245,6 +263,13 @@ export function ProjectModal({ project, onClose }: { project: Project | null; on
                   </div>
                 </section>
               </div>
+
+              {project.details.role && (
+                <section className="mt-10 pt-10 border-t border-light/10">
+                  <h3 className="font-sans text-[11px] tracking-[0.3em] font-bold text-light/50 uppercase mb-4">My part</h3>
+                  <p className="font-sans text-sm md:text-[15px] text-light/75 leading-relaxed max-w-3xl">{project.details.role}</p>
+                </section>
+              )}
 
               {project.details.note && (
                 <p className="mt-10 font-sans text-sm text-light/45 italic">{project.details.note}</p>

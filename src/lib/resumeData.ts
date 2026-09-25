@@ -20,6 +20,7 @@ export type ProjectDetails = {
   build: string[];
   stats?: { value: string; label: string }[];
   note?: string;
+  role?: string; // for team projects: what the resume owner specifically contributed
 };
 
 type ProjectBase = {
@@ -31,13 +32,20 @@ type ProjectBase = {
   link?: string;
   gallery?: Shot[];
   details: ProjectDetails;
+  badge?: string;
+  live?: { url: string; label: string }; // a hosted/playable build, e.g. itch.io
+  notDeployed?: boolean; // finished, but not hosted anywhere
 };
+
+// True only when the project is done (not WIP, no status pill) and has no live build.
+export const showNotDeployed = (p: ProjectBase): boolean =>
+  !!p.notDeployed && !p.live && !('wip' in p && p.wip) && !('status' in p && p.status);
 
 export type Featured = ProjectBase & {
   id: string;
   desc: string;
   highlights: string[];
-  art: ArtKind;
+  art?: ArtKind;
   image?: string; // screenshot used on the card; falls back to the generated art
   status?: string;
   wip?: boolean; // shows a "Work in progress" band across the card image
@@ -221,6 +229,89 @@ export const featured: Featured[] = [
       note: 'In active development. Screenshots coming soon.',
     },
   },
+  {
+    id: '05',
+    slug: 'merchantos',
+    name: 'MerchantOS',
+    category: 'Hackathon · Fintech Agent',
+    summary:
+      'An agent that watches for failed payments, works out why they failed, and decides — within strict policy limits — whether to retry or nudge the customer.',
+    desc: 'A Razorpay Buildathon submission: a policy-bounded agent loop that recovers failed payments end to end, with a full audit trail.',
+    highlights: [
+      'Five-stage agent loop: Detect → Diagnose → Decide → Act → Verify, every step written to an audit trail',
+      'Swappable Razorpay clients: the official SDK, or a deterministic in-memory simulator',
+      'Live dashboard: KPIs and charts, recovery cases, audit trail and run controls',
+    ],
+    tech: ['Next.js', 'React', 'TypeScript', 'Prisma', 'SQLite', 'Tailwind CSS', 'Recharts'],
+    link: `${GH}/MerchantOS`,
+    badge: 'Razorpay Buildathon',
+    notDeployed: true,
+    details: {
+      overview:
+        'Built for the Razorpay Buildathon, MerchantOS watches for failed payments and abandoned checkouts, classifies why each one failed, and makes a bounded recovery decision — retry, send a payment link, or hold back — before verifying the outcome. Every decision is policy-limited and logged.',
+      features: [
+        'Opens a recovery case for each failed payment or abandoned checkout',
+        'Each case runs through five stages, with a timestamped audit trace for every step',
+        'Respects opt-outs: in a simulated 50-case run, opted-out customers were correctly held back instead of contacted',
+        "The dashboard's Controls tab injects a test payment event and the case list updates live",
+        'An LLM step for advisory copy falls back to deterministic rules when no model is configured, and the audit log records which path ran',
+      ],
+      build: [
+        'Prisma schema with 5 tables (Customer, RecoveryCase, AuditLog, WebhookEvent, MetricsSnapshot) on SQLite',
+        'A client interface with a LiveRazorpayClient (wraps the real SDK) and a SimulatedRazorpayClient (deterministic in-memory emulator)',
+        '8 API routes; Zustand and TanStack Query on the client; a 5-tab dashboard (Overview, Cases, Audit Trail, Policy, Controls)',
+      ],
+      stats: [
+        { value: '5', label: 'agent loop stages' },
+        { value: '62.9%', label: 'recovered in a simulated 50-case run' },
+        { value: '8', label: 'API routes' },
+      ],
+      note: 'Built for the Razorpay Buildathon. Runs end to end against a simulated Razorpay; it has not been connected to live payments or deployed.',
+    },
+  },
+  {
+    id: '06',
+    slug: 'mysterydesk',
+    name: 'MysteryDesk',
+    category: 'Game · Full-Stack',
+    summary:
+      'A detective game where you read case files, question suspects, link evidence and name the culprit, with five endings worked out from what you actually did.',
+    desc: 'A full-stack detective investigation game with five cases, branching interrogations and a server-derived contradiction engine — built with a four-person team.',
+    highlights: [
+      'Team of four: I rebuilt a one-case prototype into the full five-case game',
+      'Contradictions between testimony and evidence are computed at query time, so the answer key is never stored',
+      'Five endings derived from the player’s actual investigation, not pre-written per case',
+    ],
+    tech: ['React', 'Vite', 'Node.js', 'Express', 'SQLite', 'GSAP'],
+    link: 'https://github.com/TejashRajuKV/Mystery_Desk',
+    badge: 'Team of 4',
+    notDeployed: true,
+    details: {
+      overview:
+        'MysteryDesk is a detective investigation game: read case files, travel between locations, interview suspects through branching dialogue, link evidence on an investigation board, and submit a final accusation. What actually happened, and which of five endings you get, is worked out from the investigation you ran — nothing is pre-written per playthrough.',
+      features: [
+        '5 cases, each with 5 suspects, 6 locations and 12–18 pieces of evidence',
+        'Every action costs in-game time; once the clock runs out, only an accusation is left',
+        'Branching interrogations that unlock or lock off depending on evidence viewed and earlier answers',
+        'An investigation board for linking evidence, and a rule-based Detective’s Notes assistant (no LLM, no network call)',
+        'Five named endings (Perfect Investigation, True Criminal, Criminal Escapes, Wrong Suspect, Innocent Accused) computed from the actual playthrough',
+        'SVG portraits generated from mood and posture data; all audio synthesised with the Web Audio API — no art or audio files shipped',
+      ],
+      build: [
+        'Express backend on Node 22’s built-in node:sqlite (no ORM), reseeded from JSON case files on every start — no game data lives in the frontend',
+        'Four kinds of statement-vs-evidence claim matching for contradiction detection; dialogue trees checked for reachability at seed time',
+        'Clock and investigation progress kept server-side, so a case survives page refreshes and server restarts',
+        'React 18 + Vite + react-router + GSAP, with hand-written CSS design tokens (no UI framework)',
+        '49 documented QA test cases; manual playthroughs reached all five endings',
+      ],
+      stats: [
+        { value: '5', label: 'cases' },
+        { value: '5', label: 'endings' },
+        { value: '49', label: 'QA test cases' },
+      ],
+      role: 'A four-person team project for the AI Augmented Software Development course. A teammate built the original single-case prototype. I rebuilt and expanded it into the full five-case game — the additional cases, the contradiction engine, the branching dialogue and the ending logic — and added Claude Code agents to the team’s development pipeline. Teammates handled edge cases and the project’s CLAUDE.md, hooks, skills and test agents.',
+    },
+  },
 ];
 
 export type ProjectKind = 'web' | 'ml' | 'game';
@@ -229,7 +320,6 @@ export type Minor = ProjectBase & {
   kind: ProjectKind;
   desc: string;
   cover?: string;
-  badge?: string;
   wip?: boolean;
 };
 
@@ -243,6 +333,8 @@ export const more: Minor[] = [
     desc: 'Conflict-free timetables for 50+ courses in under 3 seconds, with PDF/Excel export.',
     tech: ['Flask', 'OR-Tools', 'React', 'SQLite'],
     badge: 'CICADA Hackathon',
+    link: `${GH}/TimeGenius-AI`,
+    notDeployed: true,
     cover: '/projects/timegenius/cover.webp',
     gallery: [
       shot('timegenius', 'cover', 'Landing page'),
@@ -309,6 +401,8 @@ export const more: Minor[] = [
       'Step through 59 algorithms and data-structure operations, with animated visuals and the code running line by line.',
     desc: 'An interactive DSA visualizer and theory studio covering 59 topics across 8 categories.',
     tech: ['JavaScript', 'HTML', 'CSS', 'SVG'],
+    link: `${GH}/AlgoViz`,
+    notDeployed: true,
     cover: '/projects/algoviz/cover.webp',
     gallery: [
       shot('algoviz', 'cover', 'Landing page with a live sorting preview'),
@@ -345,6 +439,7 @@ export const more: Minor[] = [
     desc: '15+ REST endpoints in an MVC architecture with JWT auth, collections, wishlists and cascade deletes.',
     tech: ['Express', 'MongoDB', 'JWT', 'HTML/CSS/JS'],
     link: `${GH}/GameVault`,
+    notDeployed: true,
     cover: '/projects/gamevault/cover.webp',
     gallery: [
       shot('gamevault', 'cover', 'Landing page'),
@@ -413,6 +508,7 @@ export const more: Minor[] = [
     desc: 'Home → Room → Device → Reading hierarchy with authenticated REST APIs and cost analytics.',
     tech: ['Node.js', 'Express', 'MongoDB', 'JWT'],
     link: `${GH}/Smart-Energy-Usage-Tracker`,
+    notDeployed: true,
     cover: '/projects/energy/cover.webp',
     gallery: [
       shot('energy', 'cover', 'Landing page'),
@@ -445,6 +541,7 @@ export const more: Minor[] = [
     desc: 'A merciless troll platformer: 19 levels, two difficulty modes, a bot to race, and every pixel and sound generated at runtime.',
     tech: ['Python', 'Pygame', 'NumPy', 'OOP'],
     link: `${GH}/Don-t-Even-Bother---Pure-Evil-Edition`,
+    live: { url: 'https://lazyhunter7.itch.io/dont-even-bother', label: 'Play on itch.io' },
     cover: '/projects/dontevenbother/cover.webp',
     gallery: [
       shot('dontevenbother', 'cover', 'Title screen: your name, your lifetime deaths and the character you are wearing'),
@@ -486,6 +583,96 @@ export const more: Minor[] = [
       ],
     },
   },
+  {
+    slug: 'stationquest',
+    name: 'Station Quest',
+    kind: 'game',
+    category: 'Game · Text Adventure',
+    summary: 'Trapped on a space station with 30 moves to escape, typing plain-English commands into a retro terminal.',
+    desc: 'A text-based escape room built in Figma Make: six rooms, a natural-language command parser, and a 22-step optimal escape.',
+    tech: ['React', 'TypeScript', 'Vite', 'Tailwind CSS', 'Figma Make'],
+    link: `${GH}/StationQuestGameDevelopment`,
+    notDeployed: true,
+    details: {
+      overview:
+        'Station Quest is a text-based escape room built with Figma Make: trapped on Station Sigma, you have 30 moves to get out, typing plain-English commands ("grab the keycard", "swipe the badge") into a retro terminal.',
+      features: [
+        '6 connected rooms and a 30-step move budget, with an optimal 22-step escape route',
+        'A natural-language parser covering 16 verb groups and about 58 item/object aliases',
+        'CRT terminal UI: blinking cursor, arrow-key command history, a live backpack sidebar and an animated step counter',
+        'Puzzle chain gated by item dependencies and story flags',
+      ],
+      build: [
+        'Built in Figma Make as a React, TypeScript and Tailwind CSS app',
+        'Parser, engine and world kept as separate modules so the parser could later be swapped for an LLM without touching game logic',
+        'Immutable state: every action is validated against current state before being applied',
+      ],
+      stats: [
+        { value: '6', label: 'rooms' },
+        { value: '30', label: 'step budget' },
+        { value: '22', label: 'steps, best route' },
+      ],
+    },
+  },
+  {
+    slug: 'snakeladder',
+    name: 'Snake & Ladder Quiz',
+    kind: 'game',
+    category: 'Game · Web',
+    summary: 'Two-player Snake & Ladder where a trivia question decides whether you climb the ladder or dodge the snake.',
+    desc: 'A vanilla-JS board game with quiz-gated movement and true-random dice from an external API.',
+    tech: ['JavaScript', 'HTML/CSS', 'Open Trivia DB', 'Random.org'],
+    link: `${GH}/Snake-and-Ladder-Quiz-Game`,
+    badge: 'Course final project',
+    notDeployed: true,
+    details: {
+      overview:
+        'A two-player, browser-based Snake & Ladder game with trivia mixed into the core mechanic: landing on a snake or ladder triggers a quiz question, and a correct answer decides whether you climb or dodge.',
+      features: [
+        'Two-player turn-based play with position tracking on a 10×10 board',
+        'Quiz questions pulled live from the Open Trivia Database, gating every snake and ladder',
+        'True-random dice rolls from the Random.org API instead of Math.random',
+        'Responsive 3-column layout, with player tokens offset when they land on the same square',
+      ],
+      build: [
+        'Framework-free HTML, CSS and JavaScript — no build step, no dependencies',
+        'HTML-entity decoding and answer shuffling on API responses; a network-error fallback on the dice API',
+      ],
+    },
+  },
+  {
+    slug: 'kanban',
+    name: 'Kanban Board',
+    kind: 'web',
+    category: 'Full-Stack · AI-Assisted Build',
+    summary: 'A full-featured Kanban board built entirely from prompts, comparing two ways of directing an AI coding agent.',
+    desc: 'Boards, columns, cards, labels and roles, with drag-and-drop, an activity log and auth — built prompt-only as a course exercise.',
+    tech: ['Next.js', 'React', 'TypeScript', 'Prisma', 'NextAuth.js', 'Tailwind CSS'],
+    link: `${GH}/Kanban-Just-Prompts`,
+    badge: 'Course project',
+    notDeployed: true,
+    details: {
+      overview:
+        'Built for the AI Augmented Software Development university course, which compared building the same app two ways: guided by a pre-written CLAUDE.md, or from prompts alone. This is the prompts-only build — a genuinely full-featured Kanban board, not a shallow scaffold.',
+      features: [
+        'Full CRUD for boards, columns, cards and labels, with drag-and-drop reordering',
+        'Board membership with four roles: Owner, Admin, Member, Viewer',
+        'Activity log covering 10+ event types (moved, priority changed, assignee changed, archived…)',
+        'Credential auth with bcrypt-hashed passwords, rate limiting, dark mode and dashboard stats',
+        'Mobile-responsive: dialogs on desktop become drawers on mobile',
+      ],
+      build: [
+        '20+ API routes and an 8-model Prisma schema (SQLite by default, Postgres-capable)',
+        'Zustand and TanStack Query on the client, Zod validation, shadcn/ui on Radix',
+        'Work flowed through spec-reader and project-planner agents into an orchestrating session — the same pipeline this portfolio is maintained with',
+      ],
+      stats: [
+        { value: '20+', label: 'API routes' },
+        { value: '8', label: 'data models' },
+        { value: '4', label: 'access roles' },
+      ],
+    },
+  },
 ];
 
 export type Project = Featured | Minor;
@@ -509,18 +696,19 @@ export const skills: SkillGroup[] = [
 
 export const usedIn: Record<string, string[]> = {
   Python: ['IR-AIS', 'Behavioral Threat Detection', 'Used Car Price & Insurance', 'TimeGenius.AI', "Don't Even Bother"],
-  JavaScript: ['EcoSense India', 'GameVault', 'Smart Energy Tracker', 'AlgoViz'],
-  TypeScript: ['IR-AIS', 'KOSMOS'],
+  JavaScript: ['EcoSense India', 'GameVault', 'Smart Energy Tracker', 'AlgoViz', 'MysteryDesk', 'Snake & Ladder Quiz'],
+  TypeScript: ['IR-AIS', 'KOSMOS', 'MerchantOS', 'Station Quest', 'Kanban Board'],
   SQL: ['TimeGenius.AI'],
-  React: ['EcoSense India', 'TimeGenius.AI', 'KOSMOS'],
-  'Next.js': ['IR-AIS'],
-  Vite: ['EcoSense India', 'KOSMOS', 'This portfolio'],
-  'Tailwind CSS': ['TimeGenius.AI', 'This portfolio'],
+  'HTML/CSS': ['AlgoViz', 'GameVault', 'Smart Energy Tracker', 'Snake & Ladder Quiz'],
+  React: ['EcoSense India', 'TimeGenius.AI', 'KOSMOS', 'MysteryDesk', 'MerchantOS', 'Station Quest', 'Kanban Board'],
+  'Next.js': ['IR-AIS', 'MerchantOS', 'Kanban Board'],
+  Vite: ['EcoSense India', 'KOSMOS', 'This portfolio', 'MysteryDesk', 'Station Quest'],
+  'Tailwind CSS': ['TimeGenius.AI', 'This portfolio', 'MerchantOS', 'Station Quest', 'Kanban Board'],
   'Framer Motion': ['This portfolio'],
-  'Node.js': ['EcoSense India', 'GameVault', 'Smart Energy Tracker'],
-  'Express.js': ['EcoSense India', 'GameVault', 'Smart Energy Tracker'],
+  'Node.js': ['EcoSense India', 'GameVault', 'Smart Energy Tracker', 'MysteryDesk'],
+  'Express.js': ['EcoSense India', 'GameVault', 'Smart Energy Tracker', 'MysteryDesk'],
   Flask: ['TimeGenius.AI'],
-  'REST APIs': ['GameVault', 'Smart Energy Tracker', 'EcoSense India', 'TimeGenius.AI'],
+  'REST APIs': ['GameVault', 'Smart Energy Tracker', 'EcoSense India', 'TimeGenius.AI', 'MysteryDesk', 'MerchantOS', 'Kanban Board'],
   JWT: ['GameVault', 'Smart Energy Tracker'],
   'OAuth 2.0': ['EcoSense India'],
   'Scikit-Learn': ['IR-AIS', 'Behavioral Threat Detection', 'Used Car Price & Insurance'],
@@ -530,13 +718,14 @@ export const usedIn: Record<string, string[]> = {
   DBSCAN: ['Behavioral Threat Detection'],
   'Isolation Forest': ['Behavioral Threat Detection'],
   MongoDB: ['EcoSense India', 'GameVault', 'Smart Energy Tracker'],
-  SQLite: ['TimeGenius.AI'],
+  Prisma: ['MerchantOS', 'Kanban Board'],
+  SQLite: ['TimeGenius.AI', 'MysteryDesk', 'MerchantOS', 'Kanban Board'],
   'Unreal Engine 5': ['Looped Lies'],
   Blueprints: ['Looped Lies'],
   Pygame: ["Don't Even Bother"],
   'Git/GitHub': ['Every project'],
   'Cron Jobs': ['EcoSense India'],
-  Recharts: ['EcoSense India', 'IR-AIS'],
+  Recharts: ['EcoSense India', 'IR-AIS', 'MerchantOS'],
 };
 
 export function projectsForGroup(group: SkillGroup) {

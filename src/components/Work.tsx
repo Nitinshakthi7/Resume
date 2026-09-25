@@ -1,10 +1,11 @@
 import { motion, useScroll, useTransform } from 'motion/react';
 import { useCallback, useRef, useState } from 'react';
-import { ArrowUpRight, Github, Info, Play } from 'lucide-react';
+import { ArrowUpRight, Gamepad2, Github, Info, Play } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { ProjectArt } from './ProjectArt';
 import { ProjectModal } from './ProjectModal';
-import { GH, featured, more, type Featured, type Minor, type Project, type ProjectKind } from '../lib/resumeData';
+import { NotDeployedTag } from './NotDeployedTag';
+import { GH, featured, more, showNotDeployed, type Featured, type Minor, type Project, type ProjectKind } from '../lib/resumeData';
 
 const ease = [0.16, 1, 0.3, 1] as const;
 
@@ -23,7 +24,17 @@ function WipBand({ small = false }: { small?: boolean }) {
   );
 }
 
-function ProjectCard({ project, index, onOpen }: { project: Featured; index: number; onOpen: (p: Project) => void }) {
+function ProjectCard({
+  project,
+  index,
+  total,
+  onOpen,
+}: {
+  project: Featured;
+  index: number;
+  total: number;
+  onOpen: (p: Project) => void;
+}) {
   const isEven = index % 2 === 0;
   const ref = useRef(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'end start'] });
@@ -33,9 +44,9 @@ function ProjectCard({ project, index, onOpen }: { project: Featured; index: num
     <motion.div style={{ y }} className="absolute -inset-y-[8%] inset-x-0">
       {project.image ? (
         <img src={project.image} alt={`${project.name} screenshot`} className="w-full h-full object-cover" loading="lazy" />
-      ) : (
+      ) : project.art ? (
         <ProjectArt kind={project.art} />
-      )}
+      ) : null}
     </motion.div>
   );
 
@@ -54,7 +65,7 @@ function ProjectCard({ project, index, onOpen }: { project: Featured; index: num
         <div className="absolute inset-0 bg-gradient-to-t from-dark/60 via-transparent to-transparent pointer-events-none" />
         {project.wip && <WipBand />}
         <span className="absolute top-4 left-4 font-mono text-[11px] tracking-[0.25em] text-light/60 uppercase">
-          {project.id} / 04
+          {project.id} / {String(total).padStart(2, '0')}
         </span>
         {project.status && (
           <span className="absolute top-4 right-4 inline-flex items-center gap-2 px-3 py-1 rounded-full bg-dark/70 backdrop-blur border border-gold/40 font-sans text-[11px] tracking-[0.2em] uppercase text-gold">
@@ -83,6 +94,11 @@ function ProjectCard({ project, index, onOpen }: { project: Featured; index: num
       <div className="w-full md:w-2/5 flex flex-col justify-center">
         <div className="flex items-center gap-4 mb-5">
           <span className="font-sans text-[11px] tracking-[0.3em] font-bold text-accent uppercase">{project.category}</span>
+          {project.badge && (
+            <span className="px-2.5 py-0.5 rounded-full bg-gold/15 text-gold font-sans text-[10px] tracking-[0.2em] uppercase">
+              {project.badge}
+            </span>
+          )}
           <div className="h-px flex-grow bg-light/15" />
         </div>
 
@@ -118,12 +134,26 @@ function ProjectCard({ project, index, onOpen }: { project: Featured; index: num
           <Info size={14} />
           Details
         </button>
+        {project.live && (
+          <a
+            href={project.live.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-accent text-dark font-sans text-xs font-bold uppercase tracking-widest hover:bg-light transition-colors"
+          >
+            <Play size={14} className="fill-dark" />
+            {project.live.label}
+          </a>
+        )}
         {project.link ? (
           <a
             href={project.link}
             target="_blank"
             rel="noopener noreferrer"
-            className="group flex items-center gap-3 font-sans text-xs font-bold uppercase tracking-widest text-light w-fit"
+            className={cn(
+              'group flex items-center gap-3 font-sans text-xs font-bold uppercase tracking-widest w-fit',
+              project.live ? 'text-light/70' : 'text-light',
+            )}
           >
             <Github size={16} />
             <span className="relative overflow-hidden">
@@ -135,10 +165,13 @@ function ProjectCard({ project, index, onOpen }: { project: Featured; index: num
             <span className="w-8 h-px bg-light/50 transition-all duration-300 group-hover:w-12 group-hover:bg-accent" />
           </a>
         ) : (
-          <span className="font-sans text-xs font-bold uppercase tracking-widest text-light/45">
-            In active development
-          </span>
+          !project.live && (
+            <span className="font-sans text-xs font-bold uppercase tracking-widest text-light/45">
+              In active development
+            </span>
+          )
         )}
+        {showNotDeployed(project) && <NotDeployedTag />}
         </div>
       </div>
     </motion.article>
@@ -191,28 +224,47 @@ function MinorCard({ project, index, onOpen }: { project: Minor; index: number; 
               View details
             </span>
           </div>
-          {project.link && (
-            <a
-              href={project.link}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={(e) => e.stopPropagation()}
-              aria-label={`${project.name} on GitHub`}
-              className="absolute top-3 right-3 z-10 w-9 h-9 rounded-full bg-dark/70 backdrop-blur border border-light/15 flex items-center justify-center text-light/80 hover:bg-accent hover:text-dark hover:border-accent transition-colors"
-            >
-              <Github size={16} />
-            </a>
-          )}
+          <div className="absolute top-3 right-3 z-10 flex items-center gap-2">
+            {project.live && (
+              <a
+                href={project.live.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={(e) => e.stopPropagation()}
+                aria-label={`Play ${project.name}`}
+                className="w-9 h-9 rounded-full bg-dark/70 backdrop-blur border border-light/15 flex items-center justify-center text-light/80 hover:bg-accent hover:text-dark hover:border-accent transition-colors"
+              >
+                <Gamepad2 size={16} />
+              </a>
+            )}
+            {project.link && (
+              <a
+                href={project.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={(e) => e.stopPropagation()}
+                aria-label={`${project.name} on GitHub`}
+                className="w-9 h-9 rounded-full bg-dark/70 backdrop-blur border border-light/15 flex items-center justify-center text-light/80 hover:bg-accent hover:text-dark hover:border-accent transition-colors"
+              >
+                <Github size={16} />
+              </a>
+            )}
+          </div>
         </div>
 
         {/* Body: what was there before */}
         <div className="flex flex-col flex-grow p-6">
           <span className="font-sans text-[11px] tracking-[0.25em] uppercase text-light/50 mb-3">{project.category}</span>
           <h4 className="font-display text-2xl uppercase tracking-tight text-light mb-3 leading-none">{project.name}</h4>
-          {project.badge && (
-            <span className="w-fit mb-3 px-2.5 py-0.5 rounded-full bg-gold/15 text-gold font-sans text-[10px] tracking-[0.2em] uppercase">
-              {project.badge}
-            </span>
+          {(project.badge || showNotDeployed(project)) && (
+            <div className="flex flex-wrap items-center gap-2 mb-3">
+              {project.badge && (
+                <span className="w-fit px-2.5 py-0.5 rounded-full bg-gold/15 text-gold font-sans text-[10px] tracking-[0.2em] uppercase">
+                  {project.badge}
+                </span>
+              )}
+              {showNotDeployed(project) && <NotDeployedTag size="sm" />}
+            </div>
           )}
           <p className="font-sans text-sm text-light/65 leading-relaxed mb-5 flex-grow">{project.desc}</p>
           <p className="font-mono text-[11px] text-light/45 tracking-wide">{project.tech.join(' · ')}</p>
@@ -255,7 +307,7 @@ export function Work() {
 
         <div className="flex flex-col gap-28 md:gap-40">
           {featured.map((project, idx) => (
-            <ProjectCard key={project.id} project={project} index={idx} onOpen={setOpenProject} />
+            <ProjectCard key={project.id} project={project} index={idx} total={featured.length} onOpen={setOpenProject} />
           ))}
         </div>
 
