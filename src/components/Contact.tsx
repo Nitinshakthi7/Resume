@@ -7,10 +7,10 @@ import { ContactForm } from './ContactForm';
 
 const ease = [0.16, 1, 0.3, 1] as const;
 
-const socials = [
+const socials: { name: string; href: string; icon: typeof Github; download?: string }[] = [
   { name: 'GitHub', href: 'https://github.com/Nitinshakthi7', icon: Github },
   { name: 'LinkedIn', href: 'https://www.linkedin.com/in/nitin-m-758342219', icon: Linkedin },
-  { name: 'Resume (PDF)', href: RESUME_URL, icon: FileText },
+  { name: 'Resume (PDF)', href: RESUME_URL, icon: FileText, download: 'Nitin_M_Resume.pdf' },
 ];
 
 function CopyEmail() {
@@ -87,8 +87,13 @@ export function Contact() {
             <div className="flex flex-col gap-8">
               <h3 className="font-sans text-[11px] tracking-[0.3em] font-bold text-light/50 uppercase">Elsewhere</h3>
               <div className="flex flex-col gap-4">
-                {socials.map(({ name, href, icon: Icon }) => (
-                  <a key={name} href={href} target="_blank" rel="noopener noreferrer" className="group flex items-center gap-6 w-fit">
+                {socials.map(({ name, href, icon: Icon, download }) => (
+                  <a
+                    key={name}
+                    href={href}
+                    {...(download ? { download } : { target: '_blank', rel: 'noopener noreferrer' })}
+                    className="group flex items-center gap-6 w-fit"
+                  >
                     <div className="w-12 h-12 rounded-full border border-light/20 flex items-center justify-center group-hover:border-accent group-hover:bg-accent transition-all duration-300">
                       <Icon size={20} className="group-hover:text-dark transition-colors" />
                     </div>
