@@ -29,7 +29,7 @@ function Gallery({ project }: { project: Project }) {
     // No screenshots yet (e.g. Looped Lies): fall back to the generated art, if any
     const art = 'art' in project ? project.art : undefined;
     return (
-      <div className="relative aspect-[16/10] rounded-2xl overflow-hidden border border-light/10 bg-[#141414]">
+      <div className="relative aspect-[16/10] rounded-2xl overflow-hidden border border-light/10 bg-[#141414] min-w-0">
         {art ? <ProjectArt kind={art} /> : null}
       </div>
     );
@@ -37,7 +37,7 @@ function Gallery({ project }: { project: Project }) {
 
   const current = shots[index];
   return (
-    <div>
+    <div className="min-w-0">
       <div className="relative aspect-[16/10] rounded-2xl overflow-hidden border border-light/10 bg-[#141414] group">
         <AnimatePresence mode="wait" initial={false}>
           <motion.img
