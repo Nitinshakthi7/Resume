@@ -10,6 +10,7 @@ import { Contact } from './components/Contact';
 import { Journey } from './components/Journey';
 import { Intro } from './components/Intro';
 import { ResumeModal } from './components/ResumeModal';
+import { ChatWidget } from './components/ChatWidget';
 import { setLenis, scrollToTarget } from './lib/scroll';
 
 // Number keys jump between sections once the intro is done
@@ -105,6 +106,7 @@ export default function App() {
         <Contact onOpenResume={openResume} />
       </main>
       <ResumeModal open={resumeOpen} onClose={() => setResumeOpen(false)} />
+      <ChatWidget introFinished={introFinished} />
     </div>
   );
 }
