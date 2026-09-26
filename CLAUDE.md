@@ -5,8 +5,9 @@ Project conventions for Claude Code sessions working in this repo. This is Nitin
 ## Stack & deployment
 
 - Vite + React 19 + TypeScript, Tailwind CSS v4, Framer Motion (`motion/react`), Lenis smooth-scroll.
-- **Deployed via Google AI Studio → Cloud Run**, not Vercel/Netlify. `metadata.json`'s `SERVER_SIDE_GEMINI_API` capability flag and `.env.example` (`GEMINI_API_KEY`, `APP_URL`) reflect this. AI Studio provisions a Node.js server-side runtime alongside the Vite frontend — server-side secrets are injected at runtime, never committed.
-- `.env.example` documents required env vars; real values are injected by the AI Studio/Cloud Run runtime. Never commit `.env`.
+- **Deployed on Vercel**, connected to this GitHub repo — pushing to `main` auto-deploys, no manual build/deploy step. (`metadata.json`'s AI-Studio capability flag is a stale leftover from the project's origin, not the actual deploy target — ignore it.)
+- Server-side code (the chatbot) lives under `/api` as Vercel serverless functions, not a persistent server — see the AI chatbot section below.
+- `.env.example` documents required env vars for local dev; real secrets for production are set in the Vercel dashboard (Project Settings → Environment Variables), never committed.
 
 ## Content: single source of truth
 
@@ -33,9 +34,10 @@ When given filesystem paths to search for resume-worthy projects: list candidate
 
 ## AI chatbot
 
-A chat widget (`src/components/ChatWidget.tsx`) answers visitor questions about Nitin using a small Express server (`server/`) that calls the Gemini API free tier. See [`docs/chatbot-plan.md`](docs/chatbot-plan.md) for the full spec and status.
+A chat widget (`src/components/ChatWidget.tsx`) answers visitor questions about Nitin. `api/chat.ts` is the Vercel serverless function it calls; the actual logic (knowledge, Gemini call, rate limiting) lives in `server/` as plain, transport-agnostic modules that `api/chat.ts` imports — Vercel traces and bundles that import graph automatically, no manual bundling step. See [`docs/chatbot-plan.md`](docs/chatbot-plan.md) for the full spec and status.
 
 - **`server/knowledge.ts`** builds the system prompt straight from `resumeData.ts` — it's the only place the bot's persona/rules live, and the only place resume-content changes need to reach the bot too.
-- **Local dev needs two processes**: `npm run dev` (Vite, port 3000) and `npm run dev:api` (the chat server, port 8787) — Vite proxies `/api/*` to it. A `.env` file (gitignored) with `GEMINI_API_KEY` is required for `dev:api` to answer; `.env.example` documents the shape.
-- **Production is one process**: `npm run build` bundles the frontend with Vite and the server with esbuild (`dist-server/server.mjs`); `npm start` runs that bundle, which serves both the built static site and `/api/chat` on one port — matching Cloud Run's single-port model.
+- **Local dev:** `npm run dev:vercel` (runs `vercel dev`, which serves the Vite frontend and `/api/*` functions together on one port, close to production parity) instead of the plain `npm run dev`. Needs a one-time `vercel login` + `vercel link` to this project (interactive — can't be scripted), and a local `.env` with `GEMINI_API_KEY` (`vercel dev` loads it automatically); `.env.example` documents the shape.
+- **Production:** nothing extra to run — `git push` to `main` deploys both the static site and `/api/chat` together. The one manual step is setting `GEMINI_API_KEY` once in the Vercel dashboard (Project Settings → Environment Variables); it isn't in the repo and won't travel with a push.
+- Vercel serverless functions aren't a single persistent process — the in-memory rate limiter in `server/rateLimiter.ts` resets per cold start and doesn't share state across concurrent instances. It's still a real, useful abuse guard for this site's actual traffic level, just not a mathematically exact global cap.
 - **Model:** `gemini-3.5-flash-lite` (free tier). If Google deprecates/renames it again, the API's own error message names the current successor — check `server/geminiClient.ts`'s `MODEL` constant.

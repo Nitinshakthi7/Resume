@@ -33,11 +33,6 @@ export default defineConfig(() => {
       hmr: process.env.DISABLE_HMR !== 'true',
       // Disable file watching when DISABLE_HMR is true to save CPU during agent edits.
       watch: process.env.DISABLE_HMR === 'true' ? null : {},
-      // The chat API runs as a separate Node process in dev (`npm run dev:api`,
-      // port 8787); in production it's the same process serving everything.
-      proxy: {
-        '/api': 'http://localhost:8787',
-      },
     },
   };
 });
