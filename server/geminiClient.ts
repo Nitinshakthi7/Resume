@@ -1,5 +1,5 @@
 import { GoogleGenAI } from '@google/genai';
-import { buildSystemInstruction } from './knowledge';
+import { buildSystemInstruction } from './knowledge.js';
 
 const MODEL = 'gemini-3.5-flash-lite';
 

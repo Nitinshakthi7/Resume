@@ -2,7 +2,7 @@
 // single source of truth the site itself renders from. Nothing about Nitin
 // or his projects is duplicated or hand-typed here beyond the bio paragraphs
 // (identical to the ones on the resume PDF) and the behavioral rules.
-import { allProjects, direction, journey, skills, EMAIL, GH, showNotDeployed } from '../src/lib/resumeData';
+import { allProjects, direction, journey, skills, EMAIL, GH, showNotDeployed } from '../src/lib/resumeData.js';
 
 const BIO = `
 Curious, highly inquisitive, and hands-on. Nitin naturally wants to understand how things work beneath the surface — not just what something does, but why it works, how it works, and whether there's a better way to build it.

@@ -3,8 +3,8 @@
 // framework config needed. Everything it actually does lives in server/,
 // which is plain, transport-agnostic logic reused here.
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { checkRateLimit } from '../server/rateLimiter';
-import { generateReply, type ChatTurn } from '../server/geminiClient';
+import { checkRateLimit } from '../server/rateLimiter.js';
+import { generateReply, type ChatTurn } from '../server/geminiClient.js';
 
 const MAX_HISTORY_TURNS = 10;
 const MAX_MESSAGE_LENGTH = 2000;
