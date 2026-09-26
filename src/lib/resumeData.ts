@@ -672,7 +672,7 @@ export const more: Minor[] = [
     summary: 'A full-featured Kanban board built entirely from prompts, comparing two ways of directing an AI coding agent.',
     desc: 'Boards, columns, cards, labels and roles, with drag-and-drop, an activity log and auth — built prompt-only as a course exercise.',
     tech: ['Next.js', 'React', 'TypeScript', 'Prisma', 'NextAuth.js', 'Tailwind CSS'],
-    link: `${GH}/Kanban-Just-Prompts`,
+    link: `${GH}/Kanban`,
     badge: 'Course project',
     notDeployed: true,
     cover: '/projects/kanban/dashboard.webp',
