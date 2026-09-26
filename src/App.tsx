@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import Lenis from 'lenis';
 import { AnimatePresence } from 'motion/react';
+import { Analytics } from '@vercel/analytics/react';
 import { Navigation } from './components/Navigation';
 import { Hero } from './components/Hero';
 import { About } from './components/About';
@@ -107,6 +108,7 @@ export default function App() {
       </main>
       <ResumeModal open={resumeOpen} onClose={() => setResumeOpen(false)} />
       <ChatWidget introFinished={introFinished} />
+      <Analytics />
     </div>
   );
 }
