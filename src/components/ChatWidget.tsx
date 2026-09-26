@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
-import { MessageCircle, X, Send, Loader2 } from 'lucide-react';
+import { X, Send, Loader2 } from 'lucide-react';
 import { cn } from '../lib/utils';
 
 type Message = { role: 'user' | 'model'; text: string };
@@ -98,14 +98,39 @@ export function ChatWidget({ introFinished }: { introFinished?: boolean }) {
       <motion.button
         type="button"
         onClick={toggleOpen}
-        aria-label={open ? 'Close chat' : 'Chat about Nitin'}
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ opacity: 1, scale: 1 }}
-        whileTap={{ scale: 0.92 }}
+        aria-label={open ? 'Close chat' : "Chat with Nitin's assistant"}
+        layout
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        whileTap={{ scale: 0.96 }}
         transition={{ duration: 0.4 }}
-        className="fixed bottom-6 right-6 z-[140] w-14 h-14 rounded-full bg-accent text-dark flex items-center justify-center shadow-[0_10px_40px_rgba(226,255,0,0.35)] hover:scale-105 transition-transform"
+        className="fixed bottom-6 right-6 z-[140] flex items-center gap-2.5 pl-4 pr-5 h-12 rounded-full bg-accent text-dark shadow-[0_10px_40px_rgba(226,255,0,0.35)] hover:bg-light transition-colors"
       >
-        {open ? <X size={22} /> : <MessageCircle size={22} />}
+        <AnimatePresence mode="popLayout" initial={false}>
+          {open ? (
+            <motion.span
+              key="close"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="flex items-center gap-2"
+            >
+              <X size={16} />
+              <span className="font-sans text-[11px] font-bold tracking-[0.2em] uppercase">Close</span>
+            </motion.span>
+          ) : (
+            <motion.span
+              key="ask"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="flex items-center gap-2"
+            >
+              <span className="w-1.5 h-1.5 rounded-full bg-dark animate-pulse" />
+              <span className="font-sans text-[11px] font-bold tracking-[0.2em] uppercase">Ask Nitin's AI</span>
+            </motion.span>
+          )}
+        </AnimatePresence>
       </motion.button>
 
       <AnimatePresence>
