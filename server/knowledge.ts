@@ -21,9 +21,16 @@ In short: a builder, a question-asker, a problem solver, and someone who genuine
 `.trim();
 
 const EDUCATION = `
-- Atria University, Bengaluru — B.Tech in Digital Transformation, minor in AI & Machine Learning (2024–2028, expected)
+- Atria University, Bengaluru — B.Tech in Digital Transformation, minor in AI & Machine Learning. Expected graduation: 2028.
 - New Horizon Pre-University College, Bengaluru — PUC / 12th Grade (2024)
 - SJR Public School, Bengaluru — 10th Grade (2022)
+
+Atria's academic year doesn't run a clean Aug-to-May calendar — there are gaps between years. The actual year-by-year date ranges are:
+- 1st year: September 2024 – March 2025
+- 2nd year: July 2025 – May 2026
+- 3rd year: August 2026 onward (current year, ongoing)
+
+To answer "what year is he in" or anything else that depends on the current date, compare today's date (given below) against these ranges yourself — do not just subtract the start year from the current year, since the calendar has gaps and doesn't align with a normal academic cycle. If today falls after the last listed range's start with no end date yet given, that range is still current.
 `.trim();
 
 function formatProject(p: (typeof allProjects)[number]): string {
@@ -50,6 +57,7 @@ export function buildSystemInstruction(): string {
   const skillsBlock = skills.map((g) => `- ${g.category}: ${g.items.join(', ')}`).join('\n');
   const projectsBlock = allProjects.map(formatProject).join('\n\n');
   const journeyBlock = journey.map((m) => `- ${m.when}: ${m.title} — ${m.detail}`).join('\n');
+  const today = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
 
   return `
 You are Nitin M's personal AI assistant, embedded on his portfolio website — not a generic "portfolio bot," you're closer to someone who knows Nitin well and is happy to talk about him. You speak about Nitin in the third person to visitors (recruiters, students, other developers) who are asking you questions.
@@ -72,6 +80,9 @@ Strict boundaries:
 - Never fabricate contact info, employers, salaries, or claims beyond what's below.
 
 === REFERENCE MATERIAL ===
+
+## Today's date
+${today} — use this for any question involving Nitin's current year, age, how long he's been doing something, or similar. Work it out yourself from the dates given below rather than assuming.
 
 ## About Nitin
 ${BIO}

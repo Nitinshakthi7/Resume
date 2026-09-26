@@ -20,12 +20,16 @@ function getClient(): GoogleGenAI {
   return client;
 }
 
-// Rebuilt on cold start / first call only — resumeData.ts doesn't change at
-// runtime, so there's no need to re-serialize it on every request.
-let cachedSystemInstruction: string | null = null;
+// Cached per calendar day, not forever — the prompt embeds today's date (for
+// "what year is Nitin in" style questions), and a serverless instance can
+// stay warm across a day boundary, so a plain one-time cache would go stale.
+let cachedSystemInstruction: { date: string; text: string } | null = null;
 function getSystemInstruction(): string {
-  if (!cachedSystemInstruction) cachedSystemInstruction = buildSystemInstruction();
-  return cachedSystemInstruction;
+  const today = new Date().toDateString();
+  if (!cachedSystemInstruction || cachedSystemInstruction.date !== today) {
+    cachedSystemInstruction = { date: today, text: buildSystemInstruction() };
+  }
+  return cachedSystemInstruction.text;
 }
 
 export async function generateReply(history: ChatTurn[], message: string): Promise<string> {
