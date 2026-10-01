@@ -107,6 +107,8 @@ export function ChatWidget({ introFinished }: { introFinished?: boolean }) {
   const [greetingLoading, setGreetingLoading] = useState(false);
   const listRef = useRef<HTMLDivElement>(null);
   const readTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const pendingReplyRef = useRef<string | null>(null);
+  const timerFiredRef = useRef(false);
 
   useEffect(() => {
     listRef.current?.scrollTo({ top: listRef.current.scrollHeight, behavior: 'smooth' });
@@ -135,6 +137,12 @@ export function ChatWidget({ introFinished }: { introFinished?: boolean }) {
     });
   }, [messages.length]);
 
+  const applyReply = useCallback((replyText: string) => {
+    setMessages((cur) => [...cur, { role: 'model', text: replyText }]);
+    setMsgStatus(null);
+    pendingReplyRef.current = null;
+  }, []);
+
   const send = useCallback(async () => {
     const text = input.trim();
     if (!text || msgStatus !== null) return;
@@ -142,12 +150,24 @@ export function ChatWidget({ introFinished }: { introFinished?: boolean }) {
     setError(null);
     const historyForRequest = messages;
     setMessages((cur) => [...cur, { role: 'user', text }]);
+    pendingReplyRef.current = null;
+    timerFiredRef.current = false;
 
-    // Stage 1 — "Not seen yet"
+    // Stage 1 — "Not seen yet" (no dots)
     setMsgStatus('sent');
 
-    // Stage 2 — after 1.5 s Jill "reads" it → show typing dots
-    readTimerRef.current = setTimeout(() => setMsgStatus('read'), 1500);
+    // Stage 2 — always fires after 1.5s: Jill "reads" → show dots
+    readTimerRef.current = setTimeout(() => {
+      timerFiredRef.current = true;
+      setMsgStatus('read');
+      // If the API already returned while we were in 'sent', apply the reply now
+      if (pendingReplyRef.current !== null) {
+        const reply = pendingReplyRef.current;
+        // Wait 2–3 s so it feels like Jill is actually typing
+        const typingDelay = Math.floor(Math.random() * 1000) + 2000;
+        setTimeout(() => applyReply(reply), typingDelay);
+      }
+    }, 1500);
 
     try {
       const res = await fetch('/api/chat', {
@@ -157,14 +177,22 @@ export function ChatWidget({ introFinished }: { introFinished?: boolean }) {
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data?.error || 'Something went wrong.');
-      setMessages((cur) => [...cur, { role: 'model', text: data.reply }]);
+
+      if (timerFiredRef.current) {
+        // Timer already fired → dots are showing, wait 2–3 s like a real person typing
+        const typingDelay = Math.floor(Math.random() * 1000) + 2000;
+        setTimeout(() => applyReply(data.reply), typingDelay);
+      } else {
+        // Timer hasn't fired yet → stash the reply; timer callback will apply it
+        pendingReplyRef.current = data.reply;
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Something went wrong.');
-    } finally {
       if (readTimerRef.current) clearTimeout(readTimerRef.current);
       setMsgStatus(null);
     }
-  }, [input, msgStatus, messages]);
+  }, [input, msgStatus, messages, applyReply]);
+
 
   const onKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
