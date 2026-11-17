@@ -558,6 +558,9 @@ export const more: Minor[] = [
     live: { url: 'https://dont-even-bother.vercel.app', label: 'Play in browser' },
     cover: '/projects/dontevenbother/cover.webp',
     gallery: [
+      shot('dontevenbother', 'web-hero', 'The game’s own site: free, no download, playable in the browser'),
+      shot('dontevenbother', 'web-game', 'The site’s overview — 19 levels, 3 acts, 2 modes, 14 characters, 12 awards'),
+      shot('dontevenbother', 'web-how', 'How to play: controls for keyboard, gamepad and touch'),
       shot('dontevenbother', 'cover', 'Title screen: your name, your lifetime deaths and the character you are wearing'),
       shot('dontevenbother', 'difficulty', 'Normal or Brutal — progress is saved separately for each'),
       shot('dontevenbother', 'levels', 'Act-based level select with a rank and a best time for every level'),
@@ -568,9 +571,6 @@ export const more: Minor[] = [
       shot('dontevenbother', 'skins', '14 characters, each a different shape, face and headgear'),
       shot('dontevenbother', 'awards', '12 achievements, most of them earned by accident'),
       shot('dontevenbother', 'death', 'The narrator picks its taunt from how you died — and uses your name'),
-      shot('dontevenbother', 'web-hero', 'The game’s own site: free, no download, playable in the browser'),
-      shot('dontevenbother', 'web-game', 'The site’s overview — 19 levels, 3 acts, 2 modes, 14 characters, 12 awards'),
-      shot('dontevenbother', 'web-how', 'How to play: controls for keyboard, gamepad and touch'),
     ],
     details: {
       overview:
